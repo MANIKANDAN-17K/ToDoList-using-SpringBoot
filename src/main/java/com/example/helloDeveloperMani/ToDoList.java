@@ -1,5 +1,7 @@
 package com.example.helloDeveloperMani;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -22,8 +24,13 @@ public class ToDoList {
 		private TodoSource todoService;
 		
 		@GetMapping("/{id}")
-		String saySomething(@PathVariable int id) {
-			return "the ToDo list id is "+ id;
+		ResponseEntity<Todo> getToDoById(@PathVariable long id) {
+			try{
+			Todo createToDo = todoService.getTodoById(id);
+			return new ResponseEntity<>(createToDo,HttpStatus.OK);
+			}catch(RuntimeException e) {
+				return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+			}
 		}
 		@GetMapping("/create")
 		String sayHai(@RequestParam String name,
@@ -57,11 +64,24 @@ public class ToDoList {
 		@PostMapping("/createUser")
 		ResponseEntity<Todo> CreateUser(@RequestBody Todo todo) {
 			
-			return new ResponseEntity<>(todoService.createTodo(todo),HttpStatus.CREATED);
+				Todo createTodo = todoService.createTodo(todo);
+				return new ResponseEntity<>(createTodo,HttpStatus.CREATED);
+			
 		} 
-		@DeleteMapping("/deleteUser")
-		String deleteUser(@RequestParam int id) {
-			return "the deleted id is "+id;
+		@DeleteMapping("/{id}")
+		void deleteUser(@PathVariable long id) {
+			todoService.deleteTodo(id);
 		}
+		@GetMapping("/todolist")
+		ResponseEntity<List<Todo>> getTodos(){
+			return new ResponseEntity<List<Todo>>(todoService.getToDos(),HttpStatus.OK);
+		}
+		@PutMapping("/update")
+		ResponseEntity<Todo> updateTodoById(@PathVariable int id, @RequestBody Todo todo){
+			return new ResponseEntity<>(todoService.updateTodo(todo),HttpStatus.OK);
+		}
+		
+		
+		
 		
 }
