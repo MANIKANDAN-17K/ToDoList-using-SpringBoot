@@ -1,4 +1,5 @@
 package com.example.helloDeveloperMani;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -37,6 +38,12 @@ public class ToDoList {
 					  @RequestParam int id) {
 			return "the username is "+name+"and teh user id"+id;
 		}
+		@GetMapping("/pages")
+		ResponseEntity<Page<Todo>> getTodoPage(@RequestParam int page, @RequestParam int size){
+			return new ResponseEntity<>(todoService.getAllTodosPages(page, size),HttpStatus.OK);
+			
+		}
+		
 		@GetMapping("")
 		String sayHlo(@RequestParam("todoId") int id) {
 			return "Say  hello the id number "+id;
